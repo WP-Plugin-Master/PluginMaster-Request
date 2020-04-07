@@ -1,0 +1,35 @@
+{
+  "name": "plugin-master/request",
+  "description": "The RequestHandler for PHP.",
+  "license": "MIT",
+  "homepage": "https://github.com/emrancu/PluginMaster-Request",
+  "support": {
+    "issues": "https://github.com/emrancu/PluginMaster-Request/issues",
+    "source": "https://github.com/emrancu/PluginMaster-Request"
+  },
+  "authors": [
+    {
+      "name": "AL EMRAN",
+      "email": "emrancu1@gmail.com"
+    }
+  ],
+  "keywords": [
+    "Request",
+    "Request Handler",
+    "PluginMaster Request Handler",
+    "WordPress Plugin Development framework"
+  ],
+  "autoload": {
+    "classmap": [],
+    "psr-4": {
+      "PluginMaster\\Request\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+
+  }
+
