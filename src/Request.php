@@ -14,6 +14,17 @@ class Request extends RequestBase
         $this->requestInit();
     }
 
+
+
+    public function isMethod($method)
+    {
+        if (strtoupper($method) === $_SERVER['REQUEST_METHOD']) {
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      *
      * set all requested data as this class property;
@@ -43,14 +54,15 @@ class Request extends RequestBase
     protected function ajaxDataSet()
     {
         $inputJSON = file_get_contents('php://input');
-        if ($inputJSON) {
+        if (empty($_POST)  && $inputJSON) {
             $input = json_decode($inputJSON, true);
-            foreach ($input as $key => $value) {
-                $this->{$key} = $value;
-                $this->all[$key] = $value;
+            if ($input &&  gettype($input) === 'array') {
+                foreach ($input as $key => $value) {
+                    $this->{$key} = $value;
+                    $this->all[$key] = $value;
+                }
             }
         }
-
 
     }
 
@@ -79,10 +91,21 @@ class Request extends RequestBase
      * @param $property
      * @return |null
      */
-    public function get($property)
+    public function get($key)
     {
-        return isset($this->{$property}) ? $this->{$property} : null;
+        return isset($this->{$key}) ? $this->{$key} : null;
     }
+
+
+    /**
+     * @param $key
+     * @return mixed|null |null
+     */
+    public function header($key)
+    {
+        return isset(getallheaders()[$key]) ? getallheaders()[$key] : null;
+    }
+
 
 
     /**
