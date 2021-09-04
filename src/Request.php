@@ -2,23 +2,62 @@
 
 namespace PluginMaster\Request;
 
-use PluginMaster\Request\base\RequestBase;
+use PluginMaster\Contracts\Request\Request as RequestContract;
 
-class Request extends RequestBase
+class Request implements RequestContract
 {
 
-    protected $all = [];
+    protected $data = [];
+    protected $headers = [];
 
-    function __construct()
-    {
-        $this->requestInit();
+    function __construct() {
+        $this->setPostData();
+        $this->setAjaxData();
+        $this->setGetData();
     }
 
 
+    private function setPostData() {
+        foreach ( $_POST as $key => $value ) {
+            $this->data[ $key ] = $value;
+        }
 
-    public function isMethod($method)
-    {
-        if (strtoupper($method) === $_SERVER['REQUEST_METHOD']) {
+    }
+
+
+    private function setAjaxData() {
+        $inputJSON = file_get_contents( 'php://input' );
+        if ( empty( $_POST ) && $inputJSON ) {
+            $input = json_decode( $inputJSON, true );
+            if ( $input && gettype( $input ) === 'array' ) {
+                foreach ( $input as $key => $value ) {
+                    $this->data[ $key ] = $value;
+                }
+            }
+        }
+    }
+
+
+    private function setGetData() {
+        foreach ( $_GET as $key => $value ) {
+            $this->data[ $key ] = $value;
+        }
+
+    }
+
+    private function setRequestHeaders() {
+        foreach ( $_SERVER as $key => $value ) {
+            if ( substr( $key, 0, 5 ) <> 'HTTP_' ) {
+                continue;
+            }
+            $header                   = str_replace( ' ', '-', ucwords( str_replace( '_', ' ', strtolower( substr( $key, 5 ) ) ) ) );
+            $this->headers[ $header ] = $value;
+        }
+    }
+
+
+    public function isMethod( $method ) {
+        if ( strtoupper( $method ) === $_SERVER['REQUEST_METHOD'] ) {
             return true;
         }
         return false;
@@ -26,74 +65,18 @@ class Request extends RequestBase
 
 
     /**
-     *
      * set all requested data as this class property;
      */
-    protected function requestInit()
-    {
-        $this->postDataSet();
-        $this->ajaxDataSet();
-        $this->getDataSet();
+    public function all() {
+        return $this->data;
     }
 
     /**
-     *set server global data as this class property
+     * @param $key
+     * @return mixed|null |null
      */
-    protected function postDataSet()
-    {
-        foreach ($_POST as $key => $value) {
-            $this->{$key} = $value;
-            $this->all[$key] = $value;
-        }
-
-    }
-
-    /**
-     *set server global data as this class property
-     */
-    protected function ajaxDataSet()
-    {
-        $inputJSON = file_get_contents('php://input');
-        if (empty($_POST)  && $inputJSON) {
-            $input = json_decode($inputJSON, true);
-            if ($input &&  gettype($input) === 'array') {
-                foreach ($input as $key => $value) {
-                    $this->{$key} = $value;
-                    $this->all[$key] = $value;
-                }
-            }
-        }
-
-    }
-
-    /**
-     *set server global data as this class property
-     */
-    protected function getDataSet()
-    {
-        foreach ($_GET as $key => $value) {
-            $this->{$key} = $value;
-            $this->all[$key] = $value;
-        }
-
-    }
-
-
-    /**
-     * set all requested data as this class property;
-     */
-    public function all()
-    {
-        return $this->all;
-    }
-
-    /**
-     * @param $property
-     * @return |null
-     */
-    public function get($key)
-    {
-        return isset($this->{$key}) ? $this->{$key} : null;
+    public function get( $key ) {
+        return $this->data[ $key ] ?? null;
     }
 
 
@@ -101,20 +84,20 @@ class Request extends RequestBase
      * @param $key
      * @return mixed|null |null
      */
-    public function header($key)
-    {
-        return isset(getallheaders()[$key]) ? getallheaders()[$key] : null;
+    public function header( $key ) {
+        return $this->headers[ $key ] ?? null;
     }
 
-
+    public function url() {
+        return (isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    }
 
     /**
      * @param $property
      * @return |null
      */
-    public function __get($property)
-    {
-        return isset($this->{$property}) ? $this->{$property} : null;
+    public function __get( $property ) {
+        return $this->data[ $property ] ?? null;
     }
 
 
