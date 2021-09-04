@@ -2,10 +2,10 @@
   "name": "plugin-master/request",
   "description": "The RequestHandler for PHP.",
   "license": "MIT",
-  "homepage": "https://github.com/emrancu/PluginMaster-Request",
+  "homepage": "https://github.com/WP-Plugin-Master/PluginMaster-Request",
   "support": {
-    "issues": "https://github.com/emrancu/PluginMaster-Request/issues",
-    "source": "https://github.com/emrancu/PluginMaster-Request"
+    "issues": "https://github.com/WP-Plugin-Master/PluginMaster-Request/issues",
+    "source": "https://github.com/WP-Plugin-Master/PluginMaster-Request"
   },
   "authors": [
     {
@@ -26,7 +26,8 @@
     }
   },
   "require": {
-    "php": ">=7.0.0"
+    "php": "^7.0|^8.0",
+    "plugin-master/contracts": "^1.0"
   },
   "minimum-stability": "dev",
   "prefer-stable": true
