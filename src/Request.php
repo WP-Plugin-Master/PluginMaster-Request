@@ -11,9 +11,10 @@ class Request implements RequestContract
     protected $headers = [];
 
     function __construct() {
-        $this->setPostData();
         $this->setAjaxData();
         $this->setGetData();
+        $this->setPostData();
+        $this->setRequestHeaders();
     }
 
 
@@ -73,7 +74,7 @@ class Request implements RequestContract
 
     /**
      * @param $key
-     * @return mixed|null |null
+     * @return mixed|null
      */
     public function get( $key ) {
         return $this->data[ $key ] ?? null;
@@ -82,7 +83,7 @@ class Request implements RequestContract
 
     /**
      * @param $key
-     * @return mixed|null |null
+     * @return mixed|null
      */
     public function header( $key ) {
         return $this->headers[ $key ] ?? null;
@@ -94,7 +95,7 @@ class Request implements RequestContract
 
     /**
      * @param $property
-     * @return |null
+     * @return mixed|null
      */
     public function __get( $property ) {
         return $this->data[ $property ] ?? null;
