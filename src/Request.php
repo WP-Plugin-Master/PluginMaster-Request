@@ -2,9 +2,9 @@
 
 namespace PluginMaster\Request;
 
-use PluginMaster\Contracts\Request\Request as RequestContract;
+use PluginMaster\Contracts\Request\RequestInterface;
 
-class Request implements RequestContract
+class Request implements RequestInterface
 {
 
     protected $data = [];
