@@ -7,7 +7,14 @@ use PluginMaster\Contracts\Request\RequestInterface;
 class Request implements RequestInterface
 {
 
+    /**
+     * @var array
+     */
     protected array $data = [];
+
+    /**
+     * @var array
+     */
     protected array $headers = [];
 
     function __construct()
@@ -18,7 +25,7 @@ class Request implements RequestInterface
         $this->setRequestHeaders();
     }
 
-    private function setPostData()
+    private function setPostData(): void
     {
         foreach ($_POST as $key => $value) {
             $this->data[$key] = $value;
@@ -26,7 +33,7 @@ class Request implements RequestInterface
     }
 
 
-    private function setAjaxData()
+    private function setAjaxData(): void
     {
         $inputJSON = file_get_contents('php://input');
         if (empty($_POST) && $inputJSON) {
@@ -40,14 +47,14 @@ class Request implements RequestInterface
     }
 
 
-    private function setGetData()
+    private function setGetData(): void
     {
         foreach ($_GET as $key => $value) {
             $this->data[$key] = $value;
         }
     }
 
-    private function setRequestHeaders()
+    private function setRequestHeaders(): void
     {
         foreach ($_SERVER as $key => $value) {
             if (substr($key, 0, 5) <> 'HTTP_') {
@@ -67,7 +74,6 @@ class Request implements RequestInterface
         return false;
     }
 
-
     /**
      * set all requested data as this class property;
      */
@@ -80,7 +86,7 @@ class Request implements RequestInterface
      * @param  string  $key
      * @return mixed|null
      */
-    public function get(string $key): mixed
+    public function get(string $key)
     {
         return $this->data[$key] ?? null;
     }
@@ -89,7 +95,7 @@ class Request implements RequestInterface
      * @param  string  $key
      * @return mixed|null
      */
-    public function header(string $key):mixed
+    public function header(string $key)
     {
         return $this->headers[$key] ?? null;
     }
@@ -107,5 +113,4 @@ class Request implements RequestInterface
     {
         return $this->data[$property] ?? null;
     }
-
 }
